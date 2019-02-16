@@ -3,13 +3,14 @@
   // enabling the VSCode build tasks "tsc: build" and "tsc: watch".
   "compilerOptions": {
     "target": "es6",            // Not compatible with older browsers
-    "module": "umd",            // Compatible with both Node.js and browser
+    "module": "commonjs",       
     "moduleResolution": "node", // Tell tsc to look in node_modules for modules
-    "outDir": "js",             // Output directory for compiled files
+    "outDir": "dist",           // Output directory for compiled files
     "sourceMap": true,          // Creates *.js.map files
     "jsx": "react",             // Causes inline XML (JSX code) to be expanded
     "strict": true,             // Strict types, eg. prohibits `var x=0; x=null`
-    "alwaysStrict": true        // Enable JavaScript's "use strict" mode
+    "alwaysStrict": true,       // Enable JavaScript's "use strict" mode
+    "noImplicitAny": true
   },
   "include": ["app/**/*.ts", "app/**/*.tsx"],
   "exclude": ["node_modules"]
