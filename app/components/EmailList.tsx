@@ -1,17 +1,17 @@
 import * as React from 'react';
 
-const NEW_LINE = '\n';
-
 export interface Props {
-    emails: string[];
+    emails: string;
+    onEmailsChange(event: React.ChangeEvent<HTMLTextAreaElement>): void;
 }
 
-export default function EmailList({emails} : Props) {
-    const text = emails.reduce(
-        (text: string, email: string) => (text + NEW_LINE + email)
-    );
-    
+export default function EmailList({emails, onEmailsChange} : Props) {
     return (
-        <textarea value={text} />
+        <form>
+            <textarea
+                value={emails}
+                onChange={onEmailsChange}
+            />
+        </form>
     );
 }

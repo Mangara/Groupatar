@@ -35,6 +35,8 @@
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
+    "@types/gravatar": "^1.4.28",
+    "gravatar": "^1.8.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
   }
