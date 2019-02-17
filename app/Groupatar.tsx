@@ -12,7 +12,7 @@ export default class Groupatar extends React.Component<{}, State> {
         super(props);
         
         this.state = {
-            emails: 'me@example.com\nyou@example.com'
+            emails: 'sander.verdonschot@shopify.com\ngehana.booth@shopify.com'
         };
     }
     
@@ -28,6 +28,7 @@ export default class Groupatar extends React.Component<{}, State> {
                 <AvatarGroup
                     emails={splitEmails(this.state.emails)}
                 />
+                <a>Download</a>
             </>
         );
     }

@@ -8,7 +8,7 @@ export interface Props {
 
 export default function AvatarGroup({emails} : Props) {
     return (
-        <div>
+        <div className='avatarGroup'>
             {emails.map(email => <Avatar email={email} />)}
         </div>
     );
