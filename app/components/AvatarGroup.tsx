@@ -3,7 +3,8 @@ import * as Gravatar from 'gravatar';
 
 const WIDTH = 1600;
 const HEIGHT = 900;
-const MARGIN = 100;
+const MARGIN = 5;
+const SPACING_FACTOR = 2 / Math.sqrt(3);
 
 export interface Props {
     emails: string[];
@@ -27,9 +28,15 @@ export default class AvatarGroup extends React.Component<Props, {}> {
             ctx.clearRect(0,0, WIDTH, HEIGHT);
             
             const {emails} = this.props;
-            const rows = divide(emails, computeNumRows(emails.length));
-            const size = computeSize(rows);
-            rows.forEach((row, rowIdx) => drawRow(row, rowIdx, ctx, size));
+            const {nRows, size} = computeSize(emails.length);
+            const rows = divide(emails, nRows);
+            
+            const yOffset = (HEIGHT - nRows * size) / 2;
+            let stagger = false;
+            rows.forEach((row, rowIdx) => {
+                stagger = !stagger && rowIdx > 0 && rows[rowIdx - 1].length == row.length;
+                drawRow(row, yOffset + rowIdx * size, ctx, size, stagger);
+            });
         }
     }
     
@@ -45,11 +52,12 @@ export default class AvatarGroup extends React.Component<Props, {}> {
     }
 }
 
-function drawRow(emails: string[], row: number, ctx: CanvasRenderingContext2D, size: number) {
-    const fullWidth = size * 1.1;
-    const xOffset = (WIDTH - size - (emails.length - 1) * fullWidth) / 2;
+function drawRow(emails: string[], y: number, ctx: CanvasRenderingContext2D, size: number, stagger: boolean) {
+    const fullWidth = size * SPACING_FACTOR;
+    const makeRoomFor = stagger ? emails.length : emails.length - 1;
+    const xOffset = (WIDTH - size - makeRoomFor * fullWidth) / 2;
     emails.forEach((email, idx) => {
-        drawAvatar(email, ctx, xOffset + fullWidth * idx, size * row, size)
+        drawAvatar(email, ctx, xOffset + fullWidth * idx, y, size)
     });
 }
 
@@ -71,41 +79,49 @@ function drawAvatar(email: string, ctx: CanvasRenderingContext2D, x: number, y: 
         ctx.restore();
     };
 
-    img.src = Gravatar.url(email, {s: String(size)}, true);
+    img.src = Gravatar.url(email, {s: String(Math.round(size))}, true);
 }
 
-function computeNumRows(n: number) {
-    if (n < 3) {
-        return 1;
+function computeSize(n: number) {
+    let rows = 1;
+    while (horizontalSize(n, rows) < 1.3 * verticalSize(rows)) {
+        rows++;
     }
-    if (n < 9) {
-        return 2;
-    }
-    return 3;
-    // 1-2 -> 1
-    // 3-8 -> 2
-    // 9-? -> 3
+    rows = Math.max(rows - 1, 1);
     
+    return {
+        nRows: rows,
+        size: Math.min(horizontalSize(n, rows), verticalSize(rows)),
+    }
 }
 
-function computeSize(rows: string[][]) {
-    const h = rows.length;
-    const w = rows.map(r => r.length).reduce((acc, cur) => Math.max(acc, cur));
-    
-    const hMaxSize = (HEIGHT - 2 * MARGIN) / h;
-    const wMaxSize = (WIDTH - 2 * MARGIN - (w - 1) * (MARGIN / 2)) / w; // MARGIN / 2 should be 0.1 * size instead
-    
-    return Math.min(hMaxSize, wMaxSize);
+function horizontalSize(n: number, rows: number) {
+    const maxPerRow = Math.floor(n / rows) + 1;
+    return (WIDTH - 2 * MARGIN) / (SPACING_FACTOR * maxPerRow);
+}
+
+function verticalSize(rows: number) {
+    return (HEIGHT - 2 * MARGIN) / rows;
 }
 
 function divide(emails: string[], numRows: number) {
     const result: string[][] = [];
     let prevEnd = 0;
     
+    const perRow = emails.length / numRows;
+    let longRows = emails.length % numRows;
+    let long = longRows >= numRows / 2;
+    
     for (let i = 0; i < numRows; i++) {
-        const rowLength = Math.ceil((emails.length - prevEnd) / (numRows - i));
+        const rowLength = long ? Math.ceil(perRow) : Math.floor(perRow);
+        
         result.push(emails.slice(prevEnd, prevEnd + rowLength));
         prevEnd += rowLength;
+        
+        if (long) {
+            longRows--;
+            // Flip?
+        }
     }
     
     return result;
