@@ -1,7 +1,11 @@
-.avatar {
-    border-radius: 50%;
+.emails {
+    margin: 1em 5%;
+    width: 90%;
+    height: 8em;
 }
 
 .avatarGroup {
-    margin: 3em;    
+    margin: 1em 5%;
+    border: 1px solid black;
+    width: 90%;
 }
