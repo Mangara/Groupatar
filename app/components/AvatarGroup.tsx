@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as Gravatar from 'gravatar';
 
+import hexGridLayout from '../utils/hexGridLayout';
+
 const WIDTH = 1600;
 const HEIGHT = 900;
 const MARGIN = 5;
@@ -28,14 +30,19 @@ export default class AvatarGroup extends React.Component<Props, {}> {
             ctx.clearRect(0,0, WIDTH, HEIGHT);
             
             const {emails} = this.props;
-            const {nRows, size} = computeSize(emails.length);
-            const rows = divide(emails, nRows);
+            const layout = hexGridLayout(emails.length);
+            const nRows = layout.length;
+            const size = computeSize(layout);
             
+            const xOffset = (WIDTH - width(layout) * size) / 2 - left(layout) * size;
             const yOffset = (HEIGHT - nRows * size) / 2;
-            let stagger = false;
-            rows.forEach((row, rowIdx) => {
-                stagger = !stagger && rowIdx > 0 && rows[rowIdx - 1].length == row.length;
-                drawRow(row, yOffset + rowIdx * size, ctx, size, stagger);
+            
+            let emailIdx = 0;
+            layout.forEach((row, rowIdx) => {
+                const x = xOffset + (rowIdx % 2 === 1 ? size * SPACING_FACTOR / 2 : 0);
+                const avatarCount = row.filter(v => v).length;
+                drawRow(row, emails.slice(emailIdx, emailIdx + avatarCount), x, yOffset + rowIdx * size, ctx, size);
+                emailIdx += avatarCount;
             });
         }
     }
@@ -52,12 +59,14 @@ export default class AvatarGroup extends React.Component<Props, {}> {
     }
 }
 
-function drawRow(emails: string[], y: number, ctx: CanvasRenderingContext2D, size: number, stagger: boolean) {
+function drawRow(row: boolean[], emails: string[], x: number, y: number, ctx: CanvasRenderingContext2D, size: number) {
     const fullWidth = size * SPACING_FACTOR;
-    const makeRoomFor = stagger ? emails.length : emails.length - 1;
-    const xOffset = (WIDTH - size - makeRoomFor * fullWidth) / 2;
-    emails.forEach((email, idx) => {
-        drawAvatar(email, ctx, xOffset + fullWidth * idx, y, size)
+    let emailIdx = 0;
+    row.forEach((val, idx) => {
+        if (val) {
+            drawAvatar(emails[emailIdx], ctx, x + fullWidth * idx, y, size);
+            emailIdx++;
+        }
     });
 }
 
@@ -82,47 +91,43 @@ function drawAvatar(email: string, ctx: CanvasRenderingContext2D, x: number, y: 
     img.src = Gravatar.url(email, {s: String(Math.round(size))}, true);
 }
 
-function computeSize(n: number) {
-    let rows = 1;
-    while (horizontalSize(n, rows) < 1.3 * verticalSize(rows)) {
-        rows++;
-    }
-    rows = Math.max(rows - 1, 1);
-    
-    return {
-        nRows: rows,
-        size: Math.min(horizontalSize(n, rows), verticalSize(rows)),
-    }
+function computeSize(layout: boolean[][]) {
+    return Math.min(horizontalSize(layout), verticalSize(layout.length));
 }
 
-function horizontalSize(n: number, rows: number) {
-    const maxPerRow = Math.floor(n / rows) + 1;
-    return (WIDTH - 2 * MARGIN) / (SPACING_FACTOR * maxPerRow);
+function horizontalSize(layout: boolean[][]) {
+    return (WIDTH - 2 * MARGIN) / width(layout);
 }
 
 function verticalSize(rows: number) {
     return (HEIGHT - 2 * MARGIN) / rows;
 }
 
-function divide(emails: string[], numRows: number) {
-    const result: string[][] = [];
-    let prevEnd = 0;
+function width(layout: boolean[][]) {
+    let left = Infinity;
+    let right = 0;
     
-    const perRow = emails.length / numRows;
-    let longRows = emails.length % numRows;
-    let long = longRows >= numRows / 2;
-    
-    for (let i = 0; i < numRows; i++) {
-        const rowLength = long ? Math.ceil(perRow) : Math.floor(perRow);
+    layout.forEach((row, idx) => {
+        const offset = idx % 2 === 1 ? SPACING_FACTOR / 2 : 0;
+        const first = row.indexOf(true) * SPACING_FACTOR;
+        const last = row.lastIndexOf(true) * SPACING_FACTOR + 1;
         
-        result.push(emails.slice(prevEnd, prevEnd + rowLength));
-        prevEnd += rowLength;
-        
-        if (long) {
-            longRows--;
-            // Flip?
-        }
-    }
+        left = Math.min(left, offset + first);
+        right = Math.max(right, offset + last);
+        console.log(`row: ${JSON.stringify(row)} left: ${offset + first} right: ${offset + last}`);
+    });
+    console.log(`left: ${left} right: ${right}`);
+    return right - left;
+}
+
+function left(layout: boolean[][]) {
+    let left = Infinity;
     
-    return result;
+    layout.forEach((row, idx) => {
+        const offset = idx % 2 === 1 ? SPACING_FACTOR / 2 : 0;
+        const first = row.indexOf(true) * SPACING_FACTOR;
+        
+        left = Math.min(left, offset + first);
+    });
+    return left;
 }
