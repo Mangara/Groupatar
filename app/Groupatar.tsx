@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import EmailList from './components/EmailList';
 import AvatarGroup from './components/AvatarGroup';
+import DownloadLink from './components/DownloadLink';
 
 interface State {
     emails: string;
@@ -28,7 +29,12 @@ export default class Groupatar extends React.Component<{}, State> {
                 <AvatarGroup
                     emails={splitEmails(this.state.emails)}
                 />
-                <a>Download</a>
+                <DownloadLink 
+                    href='#'
+                    onClick={
+                        (event) => {}
+                    }
+                />
             </>
         );
     }

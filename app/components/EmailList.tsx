@@ -7,12 +7,10 @@ export interface Props {
 
 export default function EmailList({emails, onEmailsChange} : Props) {
     return (
-        <form>
-            <textarea
-                className="emails"
-                value={emails}
-                onChange={onEmailsChange}
-            />
-        </form>
+        <textarea
+            className="emails"
+            value={emails}
+            onChange={onEmailsChange}
+        />
     );
 }
