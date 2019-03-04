@@ -3,6 +3,7 @@ import * as Gravatar from 'gravatar';
 
 import {Placement} from '../utils/Layout';
 import GridLayout from '../utils/GridLayout';
+import HexGridLayout2 from '../utils/HexGridLayout2';
 
 const WIDTH = 1600;
 const HEIGHT = 900;
@@ -27,7 +28,7 @@ export default class AvatarGroup extends React.Component<Props, {}> {
         
         if (ctx) {
             const {emails} = this.props;
-            const layout = new GridLayout().layout(emails.length, WIDTH, HEIGHT);
+            const layout = new HexGridLayout2().layout(emails.length, WIDTH, HEIGHT);
             
             ctx.clearRect(0,0, WIDTH, HEIGHT);
             drawLayout(ctx, emails, layout);
