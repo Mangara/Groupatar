@@ -1,50 +1,75 @@
-export default function layout(n: number): boolean[][] {
-    const nRows = Math.floor(Math.sqrt(n));
-    const perRow = n / nRows;
+import {Layout, Coordinate, Placement} from './Layout';
+
+export default class HexGridLayout extends Layout {
+    readonly SPACING_FACTOR = 2 / Math.sqrt(3);
     
-    const nLong = n % nRows;
-    const longRows = pattern(nRows, nLong);
-    const anyLongOdd = longRows.some((long, idx) => long && idx % 2 === 1);
+    computeLayout(n: number, aspectRatio: number): Placement {
+        const nRows = Math.round(Math.sqrt(n / aspectRatio));
+        const hexGrid = this.computeGrid(n, nRows);
+        return this.toPlacement(hexGrid);
+    }
     
-    let result = [];
-    
-    let placed = 0;
-    for (let i = 0; i < nRows; i++) {
-        const rowLength = longRows[i] ? Math.ceil(perRow) : Math.floor(perRow);
+    private computeGrid(n: number, nRows: number): boolean[][] {
+        const nLong = n % nRows;
+        const longRows = this.pattern(nRows, nLong);
+        const anyLongOdd = longRows.some((long, idx) => long && idx % 2 === 1);
+        const perRow = n / nRows;
         
-        const row = new Array(rowLength);
-        row.fill(true);
+        let result = [];
         
-        if (anyLongOdd && (!longRows[i] || i % 2 === 0)) {
-            row.unshift(false);
+        for (let i = 0; i < nRows; i++) {
+            const rowLength = longRows[i] ? Math.ceil(perRow) : Math.floor(perRow);
+            
+            const row = new Array(rowLength);
+            row.fill(true);
+            
+            if (anyLongOdd && (!longRows[i] || i % 2 === 0)) {
+                row.unshift(false);
+            }
+            
+            result.push(row);
         }
         
-        result.push(row);
-        placed += rowLength;
+        return result;
     }
     
-    return result;
-}
-
-function pattern(a: number, b: number): boolean[] {
-    if (b > a / 2) {
-        return pattern(a, a - b).map(b => !b);
+    private pattern(a: number, b: number): boolean[] {
+        if (b > a / 2) {
+            return this.pattern(a, a - b).map(b => !b);
+        }
+        
+        let result = [];
+        
+        for (let i = 0; i < Math.ceil((a / 2) - b); i++) {
+            result.push(false);
+        }
+        
+        for (let i = 0; i < b; i++) {
+            result.push(true);
+            result.push(false);
+        }
+        
+        while (result.length < a) {
+            result.push(false);
+        }
+        
+        return result;
     }
     
-    let result = [];
-    
-    for (let i = 0; i < Math.ceil((a / 2) - b); i++) {
-        result.push(false);
+    private toPlacement(hexGrid: boolean[][]): Placement {
+        let coords: Coordinate[] = [];
+        
+        hexGrid.forEach((row, rowIdx) => {
+            const xOffset = rowIdx % 2 === 1 ? this.SPACING_FACTOR / 2 : 0;
+            const y = rowIdx;
+            
+            row.forEach((filled, colIdx) => {
+                if (filled) {
+                    coords.push({x: xOffset + colIdx * this.SPACING_FACTOR, y: y});
+                }
+            });
+        });
+        
+        return {coords: coords, size: 1};
     }
-    
-    for (let i = 0; i < b; i++) {
-        result.push(true);
-        result.push(false);
-    }
-    
-    while (result.length < a) {
-        result.push(false);
-    }
-    
-    return result;
 }
