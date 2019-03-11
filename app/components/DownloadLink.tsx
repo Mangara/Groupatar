@@ -2,16 +2,14 @@ import * as React from 'react';
 
 export interface Props {
     href: string;
-    onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
 }
 
-export default function DownloadLink({href, onClick} : Props) {
+export default function DownloadLink({href} : Props) {
     return (
         <div>
             <a
-                download
+                download={'groupatar.png'}
                 href={href}
-                onClick={onClick}
             >
                 Download
             </a>

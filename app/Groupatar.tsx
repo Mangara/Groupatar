@@ -6,6 +6,7 @@ import DownloadLink from './components/DownloadLink';
 
 interface State {
     emails: string;
+    imageData?: string;
 }
 
 const EMAIL_REGEX = RegExp(/\S+@\S+\.\S+/);
@@ -31,13 +32,15 @@ export default class Groupatar extends React.Component<{}, State> {
                     }
                 />
                 <AvatarGroup
-                />
-                <DownloadLink 
-                    href='#'
-                    onClick={
-                        (event) => {}
                     emails={this.splitEmails(this.state.emails)}
+                    canvasChanged={
+                        (imageData) => {
+                            this.setState({imageData});
+                        }
                     }
+                />
+                <DownloadLink
+                    href={this.state.imageData || '#'}
                 />
             </>
         );
@@ -47,29 +50,24 @@ export default class Groupatar extends React.Component<{}, State> {
         const newEmailList = emails.split(/\s+/)
             .filter(s => s.length > 0 && EMAIL_REGEX.test(s));
         
-        if (this.listsNotEqual(this.emailList, newEmailList)) {
+        if (!this.listsEqual(this.emailList, newEmailList)) {
             this.emailList = newEmailList;
         }
         
         return this.emailList;
     }
     
-    private listsNotEqual(a: string[], b: string[]) {
-        console.log('listsNotEqual?');
-        
+    private listsEqual(a: string[], b: string[]) {
         if (a.length !== b.length) {
-            console.log('true');
-            return true;
+            return false;
         }
         
         for (let i = 0; i < a.length; i++) {
             if (a[i] !== b[i]) {
-                console.log('true');
-                return true;
+                return false;
             }
         }
         
-        console.log('false');
-        return false;
+        return true;
     }
 }
