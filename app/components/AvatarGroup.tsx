@@ -12,7 +12,7 @@ export interface Props {
     emails: string[];
 }
 
-export default class AvatarGroup extends React.Component<Props, {}> {
+export default class AvatarGroup extends React.PureComponent<Props, {}> {
     private canvas: HTMLCanvasElement | null = null;
     
     componentDidMount() {
