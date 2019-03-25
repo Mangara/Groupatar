@@ -8,6 +8,7 @@ export default function DownloadLink({href} : Props) {
     return (
         <div>
             <a
+                className={'downloadButton'}
                 download={'groupatar.png'}
                 href={href}
             >
