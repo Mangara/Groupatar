@@ -46,6 +46,11 @@ export default class Groupatar extends React.Component<{}, State> {
                         }
                     />
                 </div>
+                <div className={'bottomContainer'}>
+                    <DownloadLink
+                        href={this.state.imageData || '#'}
+                    />
+                </div>
             </div>
         );
     }

@@ -6,7 +6,7 @@ export interface Props {
 
 export default function DownloadLink({href} : Props) {
     return (
-        <div>
+        <div className={'downloadContainer'}>
             <a
                 className={'downloadButton'}
                 download={'groupatar.png'}
