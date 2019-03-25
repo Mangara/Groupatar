@@ -24,25 +24,29 @@ export default class Groupatar extends React.Component<{}, State> {
     
     render() {
         return (
-            <>
-                <EmailList
-                    emails={this.state.emails}
-                    onEmailsChange={
-                        (event) => this.setState({emails: event.target.value})
-                    }
-                />
-                <AvatarGroup
-                    emails={this.splitEmails(this.state.emails)}
-                    canvasChanged={
-                        (imageData) => {
-                            this.setState({imageData});
+            <div className={'container'}>
+                <div className={'sidebarContainer'}>
+                    <EmailList
+                        emails={this.state.emails}
+                        onEmailsChange={
+                            (event) => this.setState({emails: event.target.value})
                         }
-                    }
-                />
-                <DownloadLink
-                    href={this.state.imageData || '#'}
-                />
-            </>
+                    />
+                    <DownloadLink
+                        href={this.state.imageData || '#'}
+                    />
+                </div>
+                <div className={'mainContainer'}>
+                    <AvatarGroup
+                        emails={this.splitEmails(this.state.emails)}
+                        canvasChanged={
+                            (imageData) => {
+                                this.setState({imageData});
+                            }
+                        }
+                    />
+                </div>
+            </div>
         );
     }
 
