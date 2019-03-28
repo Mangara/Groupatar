@@ -13,3 +13,4 @@ PRs are always welcome!
 - Run the server: `npm start`
 - Build dev version: `npm run build:dev`
 - Build dev version whenever files change: `npm run watch`
+- Build production version: `npm run build`
