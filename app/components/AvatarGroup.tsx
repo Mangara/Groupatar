@@ -65,6 +65,7 @@ export default class AvatarGroup extends React.PureComponent<Props, {}> {
     private drawAvatar(email: string, ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
         const img = new Image();
         const radius = size / 2;
+        const gravatarSize = this.getGravatarSize(size);
         const avatarGroup = this;
         
         img.onload = function() {
@@ -76,15 +77,25 @@ export default class AvatarGroup extends React.PureComponent<Props, {}> {
             ctx.clip();
             ctx.closePath();
             
-            ctx.drawImage(img, x, y);
+            ctx.drawImage(
+                img, 
+                0, 0,                       // Source image coords
+                gravatarSize, gravatarSize, // Source image size
+                x, y,                       // Destination coords
+                size, size                  // Destination size
+            );
             
             ctx.restore();
             
             avatarGroup.sendImageData();
-        };
+        };        
 
         img.crossOrigin = "Anonymous";
-        img.src = Gravatar.url(email, {s: String(Math.round(size))}, true);
+        img.src = Gravatar.url(email, {s: String(gravatarSize)}, true);
+    }
+
+    private getGravatarSize(size: number) {
+        return Math.pow(2, Math.ceil(Math.log(size) / Math.log(2)));
     }
     
     private sendImageData() {
