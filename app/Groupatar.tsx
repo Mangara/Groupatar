@@ -18,7 +18,7 @@ export default class Groupatar extends React.Component<{}, State> {
         super(props);
         
         this.state = {
-            emails: 'sander.verdonschot@shopify.com\ngehana.booth@shopify.com'
+            emails: '';
         };
     }
     
