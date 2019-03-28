@@ -8,7 +8,9 @@
     "build": "webpack --config webpack.prod.js",
     "build:dev": "webpack --config webpack.dev.js",
     "watch": "webpack --config webpack.dev.js --watch",
-    "start": "node server.js"
+    "start": "node server.js",
+    "predeploy": "npm run build",
+    "deploy": "bash scripts/deploy.sh"
   },
   "repository": {
     "type": "git",
