@@ -4,7 +4,6 @@ module.exports = {
     path: __dirname+'/dist',
     filename: 'app.bundle.js'
   },
-  devtool: "source-map", // Enable sourcemaps for debugging webpack's output.
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".ts", ".tsx", ".js", ".json"]
