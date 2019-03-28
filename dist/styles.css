@@ -12,39 +12,35 @@ h1 {
 
 .container {
     display: grid;
-    grid-template-rows: [emails] 4fr [main] 5fr [controls] 1fr;
+    grid-template-columns: [sidebar] 2fr [main] 5fr;
 }
 
 .sidebarContainer {
-    grid-row: emails;
+    grid-column: sidebar;
     padding: 0;
     margin: 0;
     
     display: grid;
-    /*grid-template-rows: [emails] 4fr [controls] 1fr;*/
-}
-
-.sidebarContainer>.downloadContainer {
-    display: none;
+    grid-template-rows: [emails] 4fr [controls] 1fr;
 }
 
 .mainContainer {
-    grid-row: main;
+    grid-column: main;
     padding: 0;
     margin: 0;
 }
 
 .emails {
-    /*margin-right: 1em;*/
+    grid-row: emails;
+    margin-right: 1em;
     background-color: #EEE;
     font-family: 'Open Sans', sans-serif;
     resize: none;
 }
 
 .downloadContainer {
-    grid-row: controls;
     margin: auto;
-    /*padding-right: 1em;*/
+    padding-right: 1em;
 }
 
 a.downloadButton {
@@ -73,43 +69,4 @@ a.downloadButton:hover {
     border: 1px solid black;
     background-color: #EEE;
     width: 100%;
-}
-
-@media (min-width: 42rem) {
-    .container {
-        display: grid;
-        grid-template-columns: [sidebar] 2fr [main] 5fr;
-    }
-
-    .sidebarContainer {
-        grid-column: sidebar;
-        padding: 0;
-        margin: 0;
-        
-        display: grid;
-        grid-template-rows: [emails] 4fr [controls] 1fr;
-    }
-
-    .mainContainer {
-        grid-column: main;
-        padding: 0;
-        margin: 0;
-    }
-
-    .emails {
-        grid-row: emails;
-        margin-right: 1em;
-        background-color: #EEE;
-        font-family: 'Open Sans', sans-serif;
-        resize: none;
-    }
-
-    .downloadContainer {
-        margin: auto;
-        padding-right: 1em;
-    }
-
-    .bottomContainer {
-        display: none;
-    }
 }
