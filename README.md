@@ -1,4 +1,4 @@
-# Groupatar
+# [Groupatar](https://mangara.github.io/Groupatar/)
 
 Easily and quickly generate pictures with a lot of gravatars.
 
