@@ -25,20 +25,20 @@
   },
   "homepage": "https://github.com/Mangara/Groupatar#readme",
   "devDependencies": {
-    "@types/node": "^11.9.4",
-    "@types/react": "^16.8.3",
-    "@types/react-dom": "^16.8.1",
+    "@types/node": "^11.13.18",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
     "awesome-typescript-loader": "^5.2.1",
     "source-map-loader": "^0.2.4",
-    "typescript": "^3.3.3",
-    "webpack": "^4.29.4",
-    "webpack-cli": "^3.2.3",
+    "typescript": "^3.5.3",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6",
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@types/gravatar": "^1.4.28",
+    "@types/gravatar": "^1.8.0",
     "gravatar": "^1.8.0",
-    "react": "^16.8.2",
-    "react-dom": "^16.8.2"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }
