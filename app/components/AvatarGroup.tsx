@@ -15,6 +15,7 @@ export interface Props {
 
 export default class AvatarGroup extends React.PureComponent<Props, {}> {
     private canvas: HTMLCanvasElement | null = null;
+    private bufferCanvas: HTMLCanvasElement | null = null;
     private imageData: string | undefined = undefined;
     private avatarCount: number = 0;
     
@@ -41,24 +42,42 @@ export default class AvatarGroup extends React.PureComponent<Props, {}> {
         if (!this.canvas) {
             return;
         }
-        const ctx = this.canvas.getContext('2d');
+        
+        this.bufferCanvas = document.createElement('canvas');
+        this.bufferCanvas.width = WIDTH;
+        this.bufferCanvas.height = HEIGHT;
+        
+        const ctx = this.bufferCanvas.getContext('2d');
         if (!ctx) {
             return;
         }
         
-        this.avatarCount = 0;
-        
         const {emails} = this.props;
         const layout = new HexGridLayout().layout(emails.length, WIDTH, HEIGHT);
         
-        ctx.clearRect(0,0, WIDTH, HEIGHT);
         this.drawLayout(ctx, emails, layout);
     }
     
     private drawLayout(ctx: CanvasRenderingContext2D, emails: string[], layout: Placement) {
-        const {coords, size} = layout;
-        for (let i = 0; i < emails.length; i++) {
-            this.drawAvatar(emails[i], ctx, coords[i].x - size/2, coords[i].y - size/2, size);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        
+        if (emails.length == 0) {
+            this.drawingComplete();
+        } else {
+            const {coords, size} = layout;
+            
+            this.avatarCount = 0;
+            
+            for (let i = 0; i < emails.length; i++) {
+                this.drawAvatar(
+                    emails[i], 
+                    ctx, 
+                    coords[i].x - size/2, 
+                    coords[i].y - size/2, 
+                    size
+                );
+            }
         }
     }
 
@@ -87,7 +106,7 @@ export default class AvatarGroup extends React.PureComponent<Props, {}> {
             
             ctx.restore();
             
-            avatarGroup.sendImageData();
+            avatarGroup.avatarDrawn();
         };        
 
         img.crossOrigin = "Anonymous";
@@ -98,17 +117,41 @@ export default class AvatarGroup extends React.PureComponent<Props, {}> {
         return Math.pow(2, Math.ceil(Math.log(size) / Math.log(2)));
     }
     
-    private sendImageData() {
+    private avatarDrawn() {
         this.avatarCount++;
         
-        if (this.avatarCount === this.props.emails.length
-              && this.canvas) {
-            const imageData = this.canvas.toDataURL();
-        
-            if (this.imageData !== imageData) {
-                this.imageData = imageData;
-                this.props.canvasChanged(this.imageData);
-            }
+        if (this.avatarCount === this.props.emails.length) {
+            this.drawingComplete();
         }
+    }
+    
+    private drawingComplete() {
+        this.drawBuffer();
+        this.sendImageData();
+    }
+    
+    private sendImageData() {
+        if (!this.canvas) {
+            return;
+        }
+        
+        const imageData = this.canvas.toDataURL();
+        
+        if (this.imageData !== imageData) {
+            this.imageData = imageData;
+            this.props.canvasChanged(this.imageData);
+        }
+    }
+    
+    private drawBuffer() {
+        if (!this.canvas || !this.bufferCanvas) {
+            return;
+        }
+        const ctx = this.canvas.getContext('2d');
+        if (!ctx) {
+            return;
+        }
+        
+        ctx.drawImage(this.bufferCanvas, 0, 0);
     }
 }
