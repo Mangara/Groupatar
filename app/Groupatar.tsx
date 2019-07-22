@@ -13,6 +13,7 @@ const EMAIL_REGEX = RegExp(/\S+@\S+\.\S+/);
 
 export default class Groupatar extends React.Component<{}, State> {
     private emailList: string[] = [];
+    private canvasChangeHandler = (imageData: string) => { this.setState({imageData}); };
     
     constructor(props: {}) {
         super(props);
@@ -39,11 +40,7 @@ export default class Groupatar extends React.Component<{}, State> {
                 <div className={'mainContainer'}>
                     <AvatarGroup
                         emails={this.splitEmails(this.state.emails)}
-                        canvasChanged={
-                            (imageData) => {
-                                this.setState({imageData});
-                            }
-                        }
+                        canvasChanged={this.canvasChangeHandler}
                     />
                 </div>
             </div>
