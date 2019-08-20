@@ -44,6 +44,15 @@ rm -f dist/*.js dist/*.js.map
 # - Build prod (npm run build)
 #  x Stop if error
 
+npm install
+if [ $? == 0 ]
+then
+    echo "Npm successful."
+else
+    echo "Npm error, stopping release."
+    exit
+fi
+
 npm run build
 if [ $? == 0 ]
 then
@@ -64,6 +73,7 @@ rm -f /tmp/groupatar/*
 # - Copy contents of dist to /tmp/groupatar
 
 cp dist/* /tmp/groupatar
+cp .gitignore /tmp/groupatar
 
 # - Checkout gh-pages
 #  x Stop if error
@@ -77,13 +87,9 @@ else
     exit
 fi
 
-# - Clear .
-
-rm -rf .
-
 # - Copy /tmp/groupatar to .
 
-cp /tmp/groupatar/* .
+cp -rTf /tmp/groupatar .
 
 # - Commit
 
