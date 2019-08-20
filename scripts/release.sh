@@ -79,7 +79,7 @@ fi
 
 # - Clear .
 
-rm -f *
+rm -rf .
 
 # - Copy /tmp/groupatar to .
 
@@ -87,8 +87,9 @@ cp /tmp/groupatar/* .
 
 # - Commit
 
-git add .
-git commit -m "Release"
+# git add .
+# git commit -m "Release"
+git status
 
 # - Print test instructions and how to complete release (push)
 
