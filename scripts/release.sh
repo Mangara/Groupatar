@@ -91,12 +91,7 @@ fi
 
 cp -rTf /tmp/groupatar .
 
-# - Commit
+# - Print instructions
 
-# git add .
-# git commit -m "Release"
 git status
-
-# - Print test instructions and how to complete release (push)
-
-echo "Release prepared. Run  git push  to complete."
+echo "Release prepared. Add and commit changes, then push to complete."
